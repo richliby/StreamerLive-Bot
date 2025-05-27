@@ -16,15 +16,12 @@
 - API Interactions
   - Twitch
   - Discord
-  - YouTube
-  - Discord Bot
   - Google Calendar
 - Database
   - Supabase
 - Authentication
   - OAuth2
 - Programming Languages
-  - Python
   - JavaScript
 
 ## UI Stack
