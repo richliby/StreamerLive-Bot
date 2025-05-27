@@ -1,0 +1,16 @@
+Client Id: 1343201952850247730
+
+Token: MTM0MzIwMTk1Mjg1MDI0NzczMA.G0DSlz.OL7kZ1xzmtSXfQR-pUeTbzDLDtT38q_VGbzwSk
+
+Public Key: f2c31618d968a79b33cf97440b1b5805a735bdcc565e3d0f7614769b5fac5d2a
+
+Client Secret: JPa5_hhcWVhb1M4DX5FJ-OF_H_QS53QQ
+
+Url: https://discordapp.com/oauth2/authorize?client_id=1343201952850247730&scope=bot
+
+URL2: https://discord.com/oauth2/authorize?client_id=1343201952850247730
+
+       //with applications.commands
+url3: https://discord.com/oauth2/authorize?client_id=1343201952850247730&permissions=8&integration_type=0&scope=applications.commands+bot
+
+Permission Integer: 1689124739730496
