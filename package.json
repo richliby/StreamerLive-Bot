@@ -1,10 +1,10 @@
 {
   "name": "streamerlive-bot",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "description": "a streamer going live bot",
   "license": "ISC",
   "author": "Dverge",
-  "type": "node.js",
+  "type": "module",
   "main": "main.js",
   "scripts": {
     "start": "node main.js",
@@ -13,9 +13,7 @@
   "dependencies": {
     "discord.js": "^14.18.0",
     "dotenv": "^16.4.7",
-    "node.js": "^0.0.1-security",
-    "streamerlive-bot": "file:",
-    "sql express": "^1.0.0"
+    "node.js": "^0.0.1-security"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
