@@ -1,7 +1,3 @@
-
-const fs =require('fs');
-const path = require('path');
-
 const XP_THRESHOLDS = [
   0, 100, 250, 450, 700, 1000, 1350, 1750, 2200, 2700, 3250 // Add more as needed
 ];
@@ -25,6 +21,7 @@ function getLevelFromXP(xp) {
 }
 
 function addXP(guildId, userId, amount) {
+
   return new Promise((resolve) => {
     db.get(`SELECT * FROM user_levels WHERE guild_id = ? AND user_id = ?`, [guildId, userId], (err, row) => {
       if (err) throw err;
@@ -83,7 +80,7 @@ function getLeaderboard(guildId, limit = 10) {
   });
 }
 
-module.exports = {
+export default {
   addXP,
   getUserData,
   getLeaderboard,
