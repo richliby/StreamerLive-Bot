@@ -1,5 +1,6 @@
-require("dotenv").config();
-const { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes } = require("discord.js");
+import dotenv from "dotenv";
+dotenv.config(); // Load environment variables from .env file
+import { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes } from "discord.js";
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
@@ -7,16 +8,22 @@ const client = new Client({
 
 const PREFIX = "!";
 
+const env = process.env;
+if (!env.DISCORD_TOKEN || !env.CLIENT_ID) {
+  console.error("Please set DISCORD_TOKEN and CLIENT_ID in your .env file.");
+  process.exit(1);
+}
+
 // Slash Command Registration
 const commands = [
   new SlashCommandBuilder().setName("ping").setDescription("Check bot latency."),
 ].map(command => command.toJSON());
 
-const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_TOKEN);
+const rest = new REST({ version: "10" }).setToken(env.DISCORD_TOKEN);
 (async () => {
   try {
     console.log("Registering slash commands...");
-    await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: commands });
+    await rest.put(Routes.applicationCommands(env.CLIENT_ID), { body: commands });
     console.log("Slash commands registered.");
   } catch (error) {
     console.error(error);
