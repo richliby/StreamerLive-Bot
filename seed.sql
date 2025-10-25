@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS user_levels (
+  guild_id TEXT NOT NULL,
+  user_id TEXT NOT NULL,
+  xp INTEGER DEFAULT 0,
+  level INTEGER DEFAULT 0,
+  last_message TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (guild_id, user_id)
+);
