@@ -1,9 +1,7 @@
-import dotenv from 'dotenv';
-import { REST, Routes, SlashCommandBuilder } from 'discord.js';
+import { Routes, SlashCommandBuilder } from 'discord.js';
+import { discordClient } from './api';
 
-dotenv.config();
-const env = process.env;
-const { DISCORD_CLIENT_ID, DISCORD_API_TOKEN } = env;
+const { DISCORD_CLIENT_ID } = process.env;
 
 const commands = [
     new SlashCommandBuilder().setName('ping').setDescription('Replies with Pong!'),
@@ -20,15 +18,11 @@ const commands = [
 if (!DISCORD_CLIENT_ID) {
     throw new Error('DISCORD_CLIENT_ID environment variable is not defined.');
 }
-if (!DISCORD_API_TOKEN) {
-    throw new Error('DISCORD_API_TOKEN environment variable is not defined.');
-}
 
-const rest = new REST({ version: '10' }).setToken(DISCORD_API_TOKEN);
 (async () => {
     try {
         console.log('⏳ Registering slash commands...');
-        await rest.put(Routes.applicationCommands(env.CLIENT_ID as string), { body: commands });
+        await discordClient.put(Routes.applicationCommands(DISCORD_CLIENT_ID), { body: commands });
         console.log('✅ Slash commands registered successfully!');
     } catch (error) {
         console.error('❌ Error registering commands:', error);
