@@ -37,3 +37,10 @@
   - Twitter
   - Bluesky
   - Facebook
+
+## References
+
+- [Discord.js Docs](https://discord.js.org/docs/packages/discord.js/14.24.0)
+- [Discord API Reference](https://discord.com/developers/docs/reference)
+- [Twitch API Reference](https://dev.twitch.tv/docs/api/reference)
+- [Twitch Chat & Chatbots](https://dev.twitch.tv/docs/chat/)
