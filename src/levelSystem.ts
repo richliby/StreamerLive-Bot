@@ -1,4 +1,7 @@
+import { User } from "./appdata/user";
 import { db } from "./db";
+import { Tables } from "./db/tables";
+import { UserLevel } from "./db/types";
 
 const XP_THRESHOLDS = [
   0, 100, 250, 450, 700, 1000, 1350, 1750, 2200, 2700, 3250 // Add more as needed
@@ -18,8 +21,7 @@ function getLevelFromXP(xp: number) {
   return 0;
 }
 
-function addXP(guildId: string, userId: string, amount: number) {
-
+async function addXP(guildId: string, user: User, amount: number) {
   // return new Promise((resolve) => {
   //   db.get(`SELECT * FROM user_levels WHERE guild_id = ? AND user_id = ?`, [guildId, userId], (err, row) => {
   //     if (err) throw err;
@@ -54,20 +56,91 @@ function addXP(guildId: string, userId: string, amount: number) {
   //     resolve({ leveledUp, level: newLevel });
   //   });
   // });
+  try {
+    // Fetch current user level data
+    const { data, error, status } = await db
+      .from(Tables.userLevels)
+      .select('*')
+      .eq('guild_id', guildId)
+      .eq('user_id', user.userId)
+      .maybeSingle();
 
+    const now = new Date();
+    let xp = 0, level = 0, lastMessage = now;
+
+    // Only throw if error is not 'no row found'
+    if (error && status !== 406 && status !== 200) {
+      throw new Error(`Error fetching user level data: ${error.message}`);
+    }
+
+    if (data) {
+      xp = data.xp ?? 0;
+      lastMessage = data.last_message ? new Date(data.last_message) : now;
+      const hoursSince = (now.getTime() - lastMessage.getTime()) / (1000 * 60 * 60);
+      if (hoursSince >= DECAY_HOURS) {
+        const decayRounds = Math.floor(hoursSince / DECAY_HOURS);
+        xp = Math.max(0, xp - decayRounds * DECAY_AMOUNT);
+      }
+      level = data.level ?? 0;
+    }
+
+    xp += amount;
+    const newLevel = getLevelFromXP(xp);
+    const leveledUp = !data || newLevel > level;
+
+    // Upsert user level data
+    const upsertData = {
+      guild_id: guildId,
+      user_id: user.userId,
+      xp,
+      level: newLevel,
+      last_message: now.toISOString(),
+    };
+
+    const { error: upsertError } = await db
+      .from(Tables.userLevels)
+      .upsert([upsertData], { onConflict: 'guild_id, user_id' });
+
+    if (upsertError) {
+      throw new Error(`Error updating user level data: ${upsertError.message}`);
+    }
+
+    return { leveledUp, level: newLevel };
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
 
 }
 
-function getUserData(guildId: string, userId: string) {
+async function getUserData(user: User): Promise<User | null> {
   // return new Promise((resolve) => {
   //   db.get(`SELECT * FROM user_levels WHERE guild_id = ? AND user_id = ?`, [guildId, userId], (err, row) => {
   //     if (err) throw err;
   //     resolve(row || { xp: 0, level: 0 });
   //   });
   // });
+
+  try {
+    const { data, error, status } = await db
+      .from(Tables.userLevels)
+      .select('*')
+      .eq('user_id', user.userId)
+      .eq('guild_id', user.guildId)
+      .maybeSingle();
+    // Only throw if error is not 'no row found'
+    if (error && status !== 406 && status !== 200) {
+      throw new Error(`Error fetching data for user ${user.userId}`);
+    } else if (data) {
+      return User.fromDb(data);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
 }
 
-function getLeaderboard(guildId: string, limit = 10) {
+async function getLeaderboard(guildId: string, limit = 10): Promise<User[] | null> {
   // return new Promise((resolve) => {
   //   db.all(`
   //     SELECT user_id, xp, level FROM user_levels
@@ -78,6 +151,22 @@ function getLeaderboard(guildId: string, limit = 10) {
   //     resolve(rows);
   //   });
   // });
+  try {
+    const { data, error } = await db
+      .from(Tables.userLevels)
+      .select('*')
+      .eq('guild_id', guildId)
+      .limit(limit)
+    if (error) {
+      throw new Error(`Error getting leaderboard for guild ${guildId}`)
+    } else if (data) {
+      const leaderboard: UserLevel[] = data as UserLevel[];
+      return leaderboard.map((slot) => User.fromDb(slot)).sort((a, b) => b.xp - a.xp);
+    }
+  } catch (error) {
+    console.log(error)
+  }
+  return null;
 }
 
 export default {
