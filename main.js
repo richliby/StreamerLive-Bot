@@ -1,9 +1,12 @@
-// main.js
 import { Client, Events, GatewayIntentBits } from 'discord.js';
-import './levelSystem.js'; // Import the level system module
-import dotenv from 'dotenv';
-dotenv.config(); // Load environment variables from .env file
+import './levelSystem.js';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 const token = process.env.DISCORD_TOKEN;
+if(!token){
+    throw new Error('DISCORD_TOKEN must be present in .env file')
+}
 
 // Create a new client instance
 const client = new Client({
