@@ -1,3 +1,5 @@
+import { UserLevelType } from "../db/types";
+
 export interface IUser {
 	guildId: string;
 	userId: string;
@@ -27,5 +29,15 @@ export class User implements IUser {
 		this.xp = xp;
 		this.level = level;
 		this.lastMessage = lastMessage;
+	}
+
+	fromDb(res: UserLevelType){
+		return new User({
+			guildId: res.guild_id,
+			userId: res.user_id,
+			xp: res.xp,
+			level: res.level,
+			lastMessage: res.last_message ? new Date(res.last_message) : new Date()
+		});
 	}
 }
