@@ -44,3 +44,22 @@
 - [Discord API Reference](https://discord.com/developers/docs/reference)
 - [Twitch API Reference](https://dev.twitch.tv/docs/api/reference)
 - [Twitch Chat & Chatbots](https://dev.twitch.tv/docs/chat/)
+
+## Development
+
+### Installation
+
+1. Clone this repository
+`git clone https://github.com/richliby/StreamerLive-Bot.git`
+2. Install packages
+`npm install`
+3. Initialize Supabase
+`npx supabase init`
+
+### Running the Application
+
+Run in development mode with `npm run dev`. This will launch **Nodemon** and reload the server when file changes are made
+
+### Testing
+
+Unit tests are run with **Jest** testing framework, run unit tests with `npm run test`
