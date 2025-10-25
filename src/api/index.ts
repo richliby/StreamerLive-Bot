@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { REST } from 'discord.js';
+import { Client, GatewayIntentBits, REST } from 'discord.js';
 
 const { DISCORD_API_TOKEN, SUPABASE_API_URL } = process.env;
 
@@ -10,4 +10,13 @@ export const supabaseClient = axios.create({
 if (!DISCORD_API_TOKEN) {
     throw new Error('DISCORD_API_TOKEN is not defined');
 }
-export const discordClient = new REST({ version: '10' }).setToken(DISCORD_API_TOKEN);
+
+export const restClient = new REST({ version: '10' }).setToken(DISCORD_API_TOKEN);
+
+export const discordClient = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent
+    ]
+});
