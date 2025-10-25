@@ -1,5 +1,5 @@
 import { Routes, SlashCommandBuilder } from 'discord.js';
-import { discordClient } from './api';
+import { restClient } from './api';
 
 const { DISCORD_CLIENT_ID } = process.env;
 
@@ -22,7 +22,7 @@ if (!DISCORD_CLIENT_ID) {
 (async () => {
     try {
         console.log('⏳ Registering slash commands...');
-        await discordClient.put(Routes.applicationCommands(DISCORD_CLIENT_ID), { body: commands });
+        await restClient.put(Routes.applicationCommands(DISCORD_CLIENT_ID), { body: commands });
         console.log('✅ Slash commands registered successfully!');
     } catch (error) {
         console.error('❌ Error registering commands:', error);
